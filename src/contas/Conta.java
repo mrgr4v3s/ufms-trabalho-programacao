@@ -123,11 +123,13 @@ public abstract class Conta {
         this.saldoDevedor -= valor;
     }
 
-    protected String getCodigoUnico() {
+    public String getCodigoUnico() {
         return this.codigoUnico;
     }
 
     void setCodigoUnico(String codigoUnico) {
         this.codigoUnico = codigoUnico;
     }
+
+
 }
