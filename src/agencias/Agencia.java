@@ -1,5 +1,6 @@
 package agencias;
 
+import auxiliares.Endereco;
 import contas.Conta;
 import exceptions.AgenciaJaExisteException;
 import exceptions.AgenciaNaoEncontradaException;
@@ -15,12 +16,14 @@ public class Agencia implements Comparable<Agencia> {
     private String nome;
     private String numero;
     private List<Conta> contas;
+    private Endereco endereco;
 
 
-    private Agencia(String nome, String numero) {
+    private Agencia(String nome, String numero, Endereco endereco) {
         this.nome = nome;
         this.numero = numero;
         this.contas = new ArrayList<>();
+        this.endereco = endereco;
     }
 
     public void adicionarConta(Conta conta) throws ContaJaExisteException {
@@ -38,8 +41,8 @@ public class Agencia implements Comparable<Agencia> {
         throw new ContaNaoEncontradaException();
     }
 
-    public static void criarAgencia(String nome, String numero) throws AgenciaJaExisteException {
-        Agencia agencia = new Agencia(nome, numero);
+    public static void criarAgencia(String nome, String numero, Endereco endereco) throws AgenciaJaExisteException {
+        Agencia agencia = new Agencia(nome, numero, endereco);
 
         if (encontrarAgencia(agencia))
             throw new AgenciaJaExisteException();
@@ -75,5 +78,29 @@ public class Agencia implements Comparable<Agencia> {
     @Override
     public int compareTo(Agencia agencia) {
         return this.numero.compareTo(agencia.numero);
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
     }
 }
