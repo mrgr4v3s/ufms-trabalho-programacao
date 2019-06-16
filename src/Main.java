@@ -8,6 +8,7 @@ import contas.Facil;
 import contas.Poupanca;
 import exceptions.*;
 
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,6 +16,9 @@ public class Main {
     private static Scanner teclado = new Scanner(System.in);
 
     public static void main(String[] args) {
+        System.out.println("Iniciando programa de banco...");
+
+        solicitarOperacao();
         int operacao = teclado.nextInt();
 
         while (operacao != -1) {
@@ -45,8 +49,11 @@ public class Main {
             if (operacao == 9)
                 gerarRelatorio();
 
+            solicitarOperacao();
             operacao = teclado.nextInt();
         }
+
+        System.out.println("Finalizando programa...");
     }
 
     private static void viradaDeMes() {
@@ -82,7 +89,7 @@ public class Main {
             System.out.println(e.getMessage());
 
         } catch (AgenciaNaoEncontradaException e) {
-            System.out.println("Agência informada não foi encontrada!");
+            agenciaNaoEncontrada();
 
         } catch (ContaJaExisteException e) {
             System.out.println("A conta já existe na Agência!");
@@ -95,15 +102,13 @@ public class Main {
 
             Conta conta = encontrarConta(agencia);
 
-            double valorSacado = teclado.nextDouble();
-
-            conta.realizarSaque(valorSacado);
+            conta.realizarSaque(solicitarValor());
 
         } catch (AgenciaNaoEncontradaException e) {
-            System.out.println("Agência informada não encontrada!");
+            agenciaNaoEncontrada();
 
         } catch (ContaNaoEncontradaException e) {
-            System.out.println("Conta informada não encontrada!");
+            contaNaoEncontrada();
 
         } catch (LimiteSaqueContaFacilAlcancadoException e) {
             e.printStackTrace();
@@ -119,14 +124,13 @@ public class Main {
 
             Conta conta = encontrarConta(agencia);
 
-            double valorDepositado = teclado.nextDouble();
-            conta.realizarDeposito(valorDepositado);
+            conta.realizarDeposito(solicitarValor());
 
         } catch (AgenciaNaoEncontradaException e) {
-            System.out.println("Agencia informada não encontrada");
+            agenciaNaoEncontrada();
 
         } catch (ContaNaoEncontradaException e) {
-            System.out.println("Conta informada não encontrada");
+            contaNaoEncontrada();
 
         } catch (LimiteSaldoContaFacilAlcancadoException e) {
             System.out.println(e.getMessage());
@@ -141,18 +145,16 @@ public class Main {
             Agencia agenciaDestino = encontarAgencia();
             Conta contaDestino = encontrarConta(agenciaDestino);
 
-            double valorTransferencia = teclado.nextDouble();
-
-            contaOrigem.realizarTransferencia(contaDestino, valorTransferencia);
+            contaOrigem.realizarTransferencia(contaDestino, solicitarValor());
 
         } catch (AgenciaNaoEncontradaException e) {
-            e.printStackTrace();
+            agenciaNaoEncontrada();
 
         } catch (LimiteTransferenciaContaFacilAlcancadoException | LimiteSaldoContaFacilAlcancadoException | SaldoInsuficienteException e) {
             System.out.println(e.getMessage());
 
         } catch (ContaNaoEncontradaException e) {
-            System.out.println("Conta informada não encontrada");
+            contaNaoEncontrada();
         }
     }
 
@@ -162,17 +164,15 @@ public class Main {
 
             Conta conta = encontrarConta(agencia);
 
-            double valor = teclado.nextDouble();
-
-            conta.realizarEmprestimo(valor);
+            conta.realizarEmprestimo(solicitarValor());
         } catch (AgenciaNaoEncontradaException e) {
-            System.out.println("Agencia informada não foi encontrada!");
+            agenciaNaoEncontrada();
 
         } catch (LimiteEmprestimoClienteUltrapassadoException | LimiteEmprestimoClientePremiumUltrapassadoException | LimiteSaldoContaFacilAlcancadoException e) {
             System.out.println(e.getMessage());
 
         } catch (ContaNaoEncontradaException e) {
-            System.out.println("Conta informada não foi encontrada!");
+            contaNaoEncontrada();
         }
     }
 
@@ -185,11 +185,10 @@ public class Main {
             conta.solicitarExtrato();
 
         } catch (ContaNaoEncontradaException e) {
-            System.out.println("Conta informada não encontrada");
+            contaNaoEncontrada();
 
         } catch (AgenciaNaoEncontradaException e) {
-            System.out.println("Agencia informada não encontrada");
-
+            agenciaNaoEncontrada();
         }
     }
 
@@ -211,17 +210,16 @@ public class Main {
         String tipoConta = teclado.next().toUpperCase();
 
         Cliente cliente = criarCliente();
-        double valor = teclado.nextDouble();
 
         if (tipoConta.equals("C")) {
-            return new Corrente(valor, cliente);
+            return new Corrente(solicitarValor(), cliente);
         }
 
         if (tipoConta.equals("F")) {
-            return new Facil(valor, cliente);
+            return new Facil(solicitarValor(), cliente);
         }
 
-        return new Poupanca(valor, cliente);
+        return new Poupanca(solicitarValor(), cliente);
     }
 
     private static Cliente criarCliente() {
@@ -247,5 +245,21 @@ public class Main {
         String numeroConta = teclado.next();
 
         return agencia.consultarConta(numeroConta);
+    }
+
+    private static double solicitarValor() {
+        return teclado.nextDouble();
+    }
+
+    private static void agenciaNaoEncontrada() {
+        System.out.println("Agencia informada não foi encontrada!");
+    }
+
+    private static void contaNaoEncontrada() {
+        System.out.println("Conta informada não foi encontrada!");
+    }
+
+    private static void solicitarOperacao() {
+        System.out.println("Digite a operação desejada: ");
     }
 }
