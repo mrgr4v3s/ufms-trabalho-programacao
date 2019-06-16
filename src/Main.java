@@ -121,7 +121,7 @@ public class Main {
 
             double valorDepositado = teclado.nextDouble();
             conta.realizarDeposito(valorDepositado);
-            
+
         } catch (AgenciaNaoEncontradaException e) {
             System.out.println("Agencia informada não encontrada");
 
@@ -134,6 +134,26 @@ public class Main {
     }
 
     private static void realizarTransferencia() {
+        try {
+            Agencia agenciaOrigem = encontarAgencia();
+            Conta contaOrigem = encontrarConta(agenciaOrigem);
+
+            Agencia agenciaDestino = encontarAgencia();
+            Conta contaDestino = encontrarConta(agenciaDestino);
+
+            double valorTransferencia = teclado.nextDouble();
+
+            contaOrigem.realizarTransferencia(contaDestino, valorTransferencia);
+
+        } catch (AgenciaNaoEncontradaException e) {
+            e.printStackTrace();
+
+        } catch (LimiteTransferenciaContaFacilAlcancadoException | LimiteSaldoContaFacilAlcancadoException | SaldoInsuficienteException e) {
+            System.out.println(e.getMessage());
+
+        } catch (ContaNaoEncontradaException e) {
+            System.out.println("Conta informada não encontrada");
+        }
     }
 
     private static void solicitarEmprestimo() {
