@@ -15,9 +15,10 @@ public class Facil extends Conta {
     private int quantidadeTransferenciaRealizada;
     private int quantidadeSaqueRealizado;
 
-    public Facil(double valor) throws LimiteSaldoContaFacilAlcancadoException {
+    public Facil(double valor, Cliente cliente) throws LimiteSaldoContaFacilAlcancadoException {
         adicionarSaldo(valor);
         setCodigoUnico(criarCodigoUnico());
+        this.cliente = cliente;
         contaCriada();
         zerarLimiteDeSaque();
         zerarLimiteTransferencia();
@@ -52,13 +53,13 @@ public class Facil extends Conta {
     }
 
     @Override
-    public void aplicarTaxasMensais(Cliente cliente) {
+    public void aplicarTaxasMensais() {
         zerarLimiteDeSaque();
         zerarLimiteDeSaque();
     }
 
     @Override
-    public void aplicarTaxasAnuais(Cliente cliente) {
+    public void aplicarTaxasAnuais() {
         removerSaldo(ANUIDADE);
     }
 

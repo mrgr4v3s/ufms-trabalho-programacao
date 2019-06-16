@@ -2,16 +2,13 @@ package agencias;
 
 import auxiliares.Endereco;
 import contas.Conta;
-import exceptions.AgenciaJaExisteException;
-import exceptions.AgenciaNaoEncontradaException;
-import exceptions.ContaJaExisteException;
-import exceptions.ContaNaoEncontradaException;
+import exceptions.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Agencia implements Comparable<Agencia> {
-    private static List<Agencia> agencias = new ArrayList<>();
+    public static List<Agencia> agencias = new ArrayList<>();
 
     private String nome;
     private String numero;
@@ -56,6 +53,16 @@ public class Agencia implements Comparable<Agencia> {
                 return agencia;
 
         throw new AgenciaNaoEncontradaException();
+    }
+
+    public void viradaDeMes() {
+        for (Conta conta : contas) {
+            try {
+                conta.aplicarTaxasMensais();
+            } catch (LimiteSaldoContaFacilAlcancadoException e) {
+                System.out.println("Não foi possível realizar a virada do mês para a conta " + conta.getCodigoUnico());
+            }
+        }
     }
 
     public static boolean encontrarAgencia(Agencia agenciaSendoEncontrada) {

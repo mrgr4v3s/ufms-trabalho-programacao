@@ -2,10 +2,7 @@ package contas;
 
 import clientes.Cliente;
 import com.sun.javafx.binding.StringFormatter;
-import exceptions.LimiteSaldoContaFacilAlcancadoException;
-import exceptions.LimiteSaqueContaFacilAlcancadoException;
-import exceptions.LimiteTransferenciaContaFacilAlcancadoException;
-import exceptions.SaldoInsuficienteException;
+import exceptions.*;
 import operacoes.*;
 
 import java.util.ArrayList;
@@ -15,6 +12,7 @@ public abstract class Conta {
     private static int quantidadeDeContasCriadas = 0;
     private double saldo = 0;
     private double saldoDevedor = 0;
+    protected Cliente cliente;
     private String codigoUnico;
     private List<Operacao> operacoesRealizadas = new ArrayList<>();
 
@@ -44,7 +42,7 @@ public abstract class Conta {
         conta.lancarHistoricoOperacoes(new Deposito(valor));
     }
 
-    public void realizarEmprestimo(double valor) throws LimiteSaldoContaFacilAlcancadoException {
+    public void realizarEmprestimo(double valor) throws LimiteSaldoContaFacilAlcancadoException, LimiteEmprestimoClientePremiumUltrapassadoException, LimiteEmprestimoClienteUltrapassadoException {
         adicionarSaldoDevedor(valor);
         adicionarSaldo(valor);
 
@@ -71,7 +69,7 @@ public abstract class Conta {
         System.out.println(StringFormatter.format("SALDO DEVEDOR: %d.2", getSaldo()));
     }
 
-    private void lancarHistoricoOperacoes(Operacao operacao) {
+    void lancarHistoricoOperacoes(Operacao operacao) {
         if (operacoesRealizadas.size() >= 10){
             operacoesRealizadas.remove(0);
         }
@@ -95,9 +93,9 @@ public abstract class Conta {
         Conta.quantidadeDeContasCriadas++;
     }
 
-    public abstract void aplicarTaxasMensais(Cliente cliente) throws LimiteSaldoContaFacilAlcancadoException;
+    public abstract void aplicarTaxasMensais() throws LimiteSaldoContaFacilAlcancadoException;
 
-    public abstract void aplicarTaxasAnuais(Cliente cliente);
+    public abstract void aplicarTaxasAnuais();
 
     double getSaldo() {
         return saldo;
@@ -131,5 +129,7 @@ public abstract class Conta {
         this.codigoUnico = codigoUnico;
     }
 
-
+    public Cliente getCliente() {
+        return cliente;
+    }
 }
