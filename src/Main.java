@@ -157,6 +157,23 @@ public class Main {
     }
 
     private static void solicitarEmprestimo() {
+        try {
+            Agencia agencia = encontarAgencia();
+
+            Conta conta = encontrarConta(agencia);
+
+            double valor = teclado.nextDouble();
+
+            conta.realizarEmprestimo(valor);
+        } catch (AgenciaNaoEncontradaException e) {
+            System.out.println("Agencia informada não foi encontrada!");
+
+        } catch (LimiteEmprestimoClienteUltrapassadoException | LimiteEmprestimoClientePremiumUltrapassadoException | LimiteSaldoContaFacilAlcancadoException e) {
+            System.out.println(e.getMessage());
+
+        } catch (ContaNaoEncontradaException e) {
+            System.out.println("Conta informada não foi encontrada!");
+        }
     }
 
     private static void gerarExtrato() {
