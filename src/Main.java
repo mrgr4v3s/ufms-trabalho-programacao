@@ -93,9 +93,7 @@ public class Main {
         try {
             Agencia agencia = encontarAgencia();
 
-            String numeroConta = teclado.next();
-
-            Conta conta = agencia.consultarConta(numeroConta);
+            Conta conta = encontrarConta(agencia);
 
             double valorSacado = teclado.nextDouble();
 
@@ -116,6 +114,23 @@ public class Main {
     }
 
     private static void realizarDeposito() {
+        try {
+            Agencia agencia = encontarAgencia();
+
+            Conta conta = encontrarConta(agencia);
+
+            double valorDepositado = teclado.nextDouble();
+            conta.realizarDeposito(valorDepositado);
+            
+        } catch (AgenciaNaoEncontradaException e) {
+            System.out.println("Agencia informada não encontrada");
+
+        } catch (ContaNaoEncontradaException e) {
+            System.out.println("Conta informada não encontrada");
+
+        } catch (LimiteSaldoContaFacilAlcancadoException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private static void realizarTransferencia() {
@@ -175,5 +190,11 @@ public class Main {
         String numeroAgencia = teclado.next();
 
         return Agencia.getAgencia(numeroAgencia);
+    }
+
+    private static Conta encontrarConta(Agencia agencia) throws ContaNaoEncontradaException {
+        String numeroConta = teclado.next();
+
+        return agencia.consultarConta(numeroConta);
     }
 }
