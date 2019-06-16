@@ -6,10 +6,7 @@ import contas.Conta;
 import contas.Corrente;
 import contas.Facil;
 import contas.Poupanca;
-import exceptions.AgenciaJaExisteException;
-import exceptions.AgenciaNaoEncontradaException;
-import exceptions.ContaJaExisteException;
-import exceptions.LimiteSaldoContaFacilAlcancadoException;
+import exceptions.*;
 
 import java.util.List;
 import java.util.Scanner;
@@ -77,8 +74,7 @@ public class Main {
         try {
             Conta novaConta = criarConta();
 
-            String numeroAgencia = teclado.next();
-            Agencia agencia = Agencia.getAgencia(numeroAgencia);
+            Agencia agencia = encontarAgencia();
 
             agencia.adicionarConta(novaConta);
 
@@ -94,7 +90,29 @@ public class Main {
     }
 
     private static void realizarSaque() {
+        try {
+            Agencia agencia = encontarAgencia();
 
+            String numeroConta = teclado.next();
+
+            Conta conta = agencia.consultarConta(numeroConta);
+
+            double valorSacado = teclado.nextDouble();
+
+            conta.realizarSaque(valorSacado);
+
+        } catch (AgenciaNaoEncontradaException e) {
+            System.out.println("Agência informada não encontrada!");
+
+        } catch (ContaNaoEncontradaException e) {
+            System.out.println("Conta informada não encontrada!");
+
+        } catch (LimiteSaqueContaFacilAlcancadoException e) {
+            e.printStackTrace();
+
+        } catch (SaldoInsuficienteException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private static void realizarDeposito() {
@@ -151,5 +169,11 @@ public class Main {
             return new Premium(nomeCliente, cpfCliente, dataNascimento, endereco);
 
         return new Cliente(nomeCliente, cpfCliente, dataNascimento, endereco);
+    }
+
+    private static Agencia encontarAgencia() throws AgenciaNaoEncontradaException {
+        String numeroAgencia = teclado.next();
+
+        return Agencia.getAgencia(numeroAgencia);
     }
 }
