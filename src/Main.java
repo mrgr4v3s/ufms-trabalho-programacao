@@ -177,6 +177,20 @@ public class Main {
     }
 
     private static void gerarExtrato() {
+        try {
+            Agencia agencia = encontarAgencia();
+
+            Conta conta = encontrarConta(agencia);
+
+            conta.solicitarExtrato();
+
+        } catch (ContaNaoEncontradaException e) {
+            System.out.println("Conta informada não encontrada");
+
+        } catch (AgenciaNaoEncontradaException e) {
+            System.out.println("Agencia informada não encontrada");
+
+        }
     }
 
     private static void gerarRelatorio() {
